@@ -1,0 +1,11 @@
+name: Build and publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+    - name: No Operation Step
+      run: echo "This is a noop step. No operations performed."
