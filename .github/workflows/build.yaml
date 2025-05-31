@@ -21,3 +21,9 @@ jobs:
 
     - name: Build
       run: hugo --minify
+
+    - name: Deploy
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        command: pages deploy public --project-name=aliktb-blog --branch=${{ github.head_ref }}
