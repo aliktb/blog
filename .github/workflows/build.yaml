@@ -13,3 +13,8 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: '0.147.7'
