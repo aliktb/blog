@@ -24,7 +24,8 @@ jobs:
     - name: Build
       run: hugo --minify
 
-    - name: Deploy
+    - id: deploy
+      name: Deploy
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -35,3 +36,11 @@ jobs:
       run: |
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "pr_number=$pull_number" >> "$GITHUB_OUTPUT"
+
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ steps.get_pr_number.outputs.pr_number }}
+        body: |
+          The preview environment is now available at ${{steps.deploy.outputs.pages-deployment-alias-url}}
+        reactions: 'rocket'
