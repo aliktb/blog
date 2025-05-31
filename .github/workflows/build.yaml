@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  noop:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: No Operation Step
-      run: echo "This is a noop step. No operations performed."
+    - name: Checkout code
+      uses: actions/checkout@v4
+
