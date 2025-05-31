@@ -29,3 +29,9 @@ jobs:
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         command: pages deploy public --project-name=aliktb-blog --branch=${{ github.head_ref }}
+
+    - id: get_pr_number
+      name: Print PR number
+      run: |
+        pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        echo "pr_number=$pull_number" >> "$GITHUB_OUTPUT"
