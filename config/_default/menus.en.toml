@@ -31,6 +31,12 @@
 #  pageRef = "posts"
 #  weight = 20
 
+[[main]]
+ name = ""
+ pre = "github"
+ url = "https://github.com/aliktb"
+ weight = 20
+
 #[[subnavigation]]
 #  name = "An interesting topic"
 #  pageRef = "tags/interesting-topic"
