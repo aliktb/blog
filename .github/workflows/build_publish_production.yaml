@@ -31,3 +31,13 @@ jobs:
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         command: pages deploy public --project-name=aliktb-blog
+
+    - name: Check URL is healthy
+      run: |
+        curl \
+          --connect-timeout 5 \
+          --fail \
+          --retry 10 \
+          --retry-delay 5 \
+          --retry-max-time 120 \
+          ${{steps.deploy.outputs.pages-deployment-alias-url}}
