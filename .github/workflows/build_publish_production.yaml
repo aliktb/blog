@@ -7,8 +7,20 @@ on:
       - 'main'
 
 jobs:
-  noop:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: No Operation Step
-      run: echo "This is a noop step. No operations performed."
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: '0.147.7'
+
+    - name: Build
+      run: hugo --minify
