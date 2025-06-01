@@ -43,6 +43,7 @@ jobs:
           --retry 10 \
           --retry-delay 5 \
           --retry-max-time 120 \
+          -o /dev/null \
           ${{ env.PRODUCTION_URL }}
 
     - name: Notify
