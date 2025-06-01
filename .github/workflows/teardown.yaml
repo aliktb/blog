@@ -36,4 +36,4 @@ jobs:
         ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         PROJECT_NAME: aliktb-blog
-        URL_TO_DELETE: https://${{ env.head_ref_28_chars }}".aliktb-blog.pages.dev
+        URL_TO_DELETE: https://${{ env.head_ref_28_chars }}.aliktb-blog.pages.dev
