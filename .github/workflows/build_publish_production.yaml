@@ -1,0 +1,65 @@
+name: Build and Publish Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: '0.147.7'
+
+    - name: Build
+      run: hugo --minify
+
+    - id: deploy
+      name: Deploy to Production
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        command: pages deploy public --project-name=aliktb-blog
+
+    - name: Check URL is healthy
+      run: |
+        curl \
+          --connect-timeout 5 \
+          --fail \
+          --retry 10 \
+          --retry-delay 5 \
+          --retry-max-time 120 \
+          ${{steps.deploy.outputs.pages-deployment-alias-url}}
+
+    - name: Notify
+      id: slack
+      uses: slackapi/slack-github-action@v2.1.0
+      with:
+        # For posting a rich message using Block Kit
+        payload: |
+          {
+            "text": "Blog deployed to Production :rocket:\n",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Blog deployed to Production :rocket: \nView the site at ${{steps.deploy.outputs.pages-deployment-alias-url}} \nView the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+            ]
+          }
+
+        webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
