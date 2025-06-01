@@ -17,6 +17,8 @@ jobs:
       with:
         python-version: '3.13'
         cache: 'pip' # caching pip dependencies
+        cache-dependency-path: |
+          scripts/requirements.txt
 
     - name: Install dependencies
       run: pip install scripts/requirements.txt
