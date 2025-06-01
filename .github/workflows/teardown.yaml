@@ -1,0 +1,30 @@
+name: Build and publish
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: 'pip' # caching pip dependencies
+
+    - name: Install dependencies
+      run: pip install scripts/requirements.txt
+
+    - name: Delete deployments
+      run: python scripts/delete_deployments.py
+      env:
+        ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        PROJECT_NAME: aliktb-blog
+        URL_TO_DELETE: https://${{github.head_ref}}.aliktb-blog.pages.dev

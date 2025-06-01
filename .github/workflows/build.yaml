@@ -2,10 +2,55 @@ name: Build and publish
 
 on:
   workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize,reopened]
 
 jobs:
-  noop:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: No Operation Step
-      run: echo "This is a noop step. No operations performed."
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: '0.147.7'
+
+    - name: Build
+      run: hugo --minify
+
+    - id: deploy
+      name: Deploy
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        command: pages deploy public --project-name=aliktb-blog --branch=${{ github.head_ref }}
+
+    - id: get_pr_number
+      name: Print PR number
+      run: |
+        pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        echo "pr_number=$pull_number" >> "$GITHUB_OUTPUT"
+
+    - name: Check URL is healthy
+      run: |
+        curl \
+          --connect-timeout 5 \
+          --fail \
+          --retry 10 \
+          --retry-delay 5 \
+          --retry-max-time 120 \
+          ${{steps.deploy.outputs.pages-deployment-alias-url}}
+
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ steps.get_pr_number.outputs.pr_number }}
+        body: |
+          The preview environment is now available at ${{steps.deploy.outputs.pages-deployment-alias-url}}
+        reactions: 'rocket'
