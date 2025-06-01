@@ -1,4 +1,4 @@
-name: Build and publish
+name: Teardown
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
       run: pip install scripts/requirements.txt
 
     - name: Delete deployments
-      run: python scripts/delete_deployments.py
+      run: python scripts/teardown_old_deployments.py
       env:
         ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
