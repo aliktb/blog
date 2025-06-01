@@ -6,6 +6,9 @@ on:
     branches:
       - 'main'
 
+env:
+  PRODUCTION_URL: https://www.aliktb.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,7 +43,8 @@ jobs:
           --retry 10 \
           --retry-delay 5 \
           --retry-max-time 120 \
-          ${{steps.deploy.outputs.pages-deployment-alias-url}}
+          -o /dev/null \
+          ${{ env.PRODUCTION_URL }}
 
     - name: Notify
       id: slack
@@ -55,7 +59,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "Blog deployed to Production :rocket: \nView the site at ${{steps.deploy.outputs.pages-deployment-alias-url}} \nView the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  "text": "Blog deployed to Production :rocket: \n\n>View the site at ${{ env.PRODUCTION_URL }} \n>View the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 }
               }
             ]
