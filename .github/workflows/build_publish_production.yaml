@@ -24,3 +24,10 @@ jobs:
 
     - name: Build
       run: hugo --minify
+
+    - id: deploy
+      name: Deploy to Production
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        command: pages deploy public --project-name=aliktb-blog
