@@ -41,3 +41,25 @@ jobs:
           --retry-delay 5 \
           --retry-max-time 120 \
           ${{steps.deploy.outputs.pages-deployment-alias-url}}
+
+    - name: Notify
+      id: slack
+      uses: slackapi/slack-github-action@v2.1.0
+      with:
+        # For posting a rich message using Block Kit
+        payload: |
+          {
+            "text": "Blog deployed to Production :rocket:\n",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Blog deployed to Production :rocket: \nView the site at ${{steps.deploy.outputs.pages-deployment-alias-url}} \nView the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+            ]
+          }
+
+        webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+        webhook-type: incoming-webhook
