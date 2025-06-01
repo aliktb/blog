@@ -1,4 +1,4 @@
-name: Build and publish
+name: Teardown
 
 on:
   workflow_dispatch:
@@ -17,12 +17,14 @@ jobs:
       with:
         python-version: '3.13'
         cache: 'pip' # caching pip dependencies
+        cache-dependency-path: |
+          scripts/requirements.txt
 
     - name: Install dependencies
-      run: pip install scripts/requirements.txt
+      run: pip install -r scripts/requirements.txt
 
     - name: Delete deployments
-      run: python scripts/delete_deployments.py
+      run: python scripts/teardown_old_deployments.py
       env:
         ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
