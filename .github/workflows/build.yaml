@@ -37,6 +37,16 @@ jobs:
         pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         echo "pr_number=$pull_number" >> "$GITHUB_OUTPUT"
 
+    - name: Check URL is healthy
+      run: |
+        curl \
+          --connect-timeout 5 \
+          --fail \
+          --retry 10 \
+          --retry-delay 5 \
+          --retry-max-time 120 \
+          ${{steps.deploy.outputs.pages-deployment-alias-url}}
+
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v4
       with:
