@@ -59,7 +59,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "Blog deployed to Production :rocket: \nView the site at ${{ env.PRODUCTION_URL }} \nView the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  "text": "Blog deployed to Production :rocket: \n\n>View the site at ${{ env.PRODUCTION_URL }} \n>View the action run at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 }
               }
             ]
